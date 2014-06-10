@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        >
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Paired NODES"
+            android:id="@+id/btnPairedNodes"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream Motion"
+            android:id="@+id/btnMotion"
+        android:layout_weight="1"
+        android:layout_below="@+id/btnPairedNodes"
+        android:layout_alignLeft="@+id/btnPairedNodes" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream Clima"
+            android:id="@+id/btnClima"
+            android:layout_weight="1"
+        android:layout_below="@+id/btnMotion"
+        android:layout_alignLeft="@+id/btnMotion"
+        android:layout_alignRight="@+id/btnMotion" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream Therma"
+            android:id="@+id/btnTherma"
+            android:layout_weight="1"
+        android:layout_below="@+id/btnClima"
+        android:layout_alignLeft="@+id/btnClima"
+        android:layout_alignRight="@+id/btnClima" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream OXA"
+            android:id="@+id/btnOxa"
+            android:layout_weight="1"
+        android:layout_toRightOf="@+id/btnTherma"
+        android:layout_alignRight="@+id/btnPairedNodes"
+        android:layout_below="@+id/btnMotion"
+        android:layout_alignBottom="@+id/btnClima" />
+
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Capture Color"
+            android:id="@+id/btnChroma"
+            android:layout_weight="1"
+        android:layout_alignTop="@+id/btnBarCode"
+        android:layout_toRightOf="@+id/btnBarCode"
+        android:layout_alignRight="@+id/btnPairedNodes"
+        android:layout_alignLeft="@+id/btnThermoCouple"
+        android:layout_alignBottom="@+id/btnBarCode" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stream ThermoCouple"
+        android:id="@+id/btnThermoCouple"
+        android:layout_weight="1"
+        android:layout_below="@+id/btnOxa"
+        android:layout_alignLeft="@+id/btnOxa"
+        android:layout_alignRight="@+id/btnPairedNodes"
+        android:layout_alignTop="@+id/btnTherma"
+        android:layout_alignBottom="@+id/btnTherma" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bar Code"
+        android:id="@+id/btnBarCode"
+        android:layout_below="@+id/btnTherma"
+        android:layout_alignLeft="@+id/btnTherma"
+        android:layout_toLeftOf="@+id/btnThermoCouple" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh Sensors "
+        android:id="@+id/btnRefreshSensors"
+        android:layout_below="@+id/btnPairedNodes"
+        android:layout_alignLeft="@+id/btnOxa"
+        android:layout_alignRight="@+id/btnPairedNodes"
+        android:layout_above="@+id/btnOxa"
+        android:layout_alignBottom="@+id/btnMotion" />
+
+    <Button
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Pulse LEDS "
+    android:id="@+id/btnPulseLed"
+    android:layout_below="@+id/btnChroma"
+    android:layout_alignLeft="@+id/btnOxa"
+    android:layout_alignRight="@+id/btnPairedNodes"  />
+    <Button
+        android:visibility="gone"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IO Sensor "
+        android:id="@+id/btnIOSensor"
+        android:layout_below="@+id/btnChroma"
+        android:layout_alignLeft="@+id/btnOxa"
+        android:layout_alignRight="@+id/btnPairedNodes"  />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Karl But"
+        android:id="@+id/btnKarl"
+        android:layout_below="@+id/btnBarCode"
+        android:layout_alignLeft="@+id/btnBarCode"
+        android:layout_toLeftOf="@+id/btnChroma" />
+</RelativeLayout>
