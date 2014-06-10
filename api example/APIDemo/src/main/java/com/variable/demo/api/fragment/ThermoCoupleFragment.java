@@ -33,16 +33,31 @@ public class ThermoCoupleFragment extends Fragment implements ThermocoupleSensor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View root = inflater.inflate(R.layout.thermocouple, null, false);
-        temperatureText = (TextView) root.findViewById(R.id.txtThermoCoupleReading);
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMOCOUPLE) == null) {
+            return inflater.inflate(R.layout.sensor_not_present, null, false);
+        } else {
+            // End Karl addition
 
-        return root;
+            View root = inflater.inflate(R.layout.thermocouple, null, false);
+            temperatureText = (TextView) root.findViewById(R.id.txtThermoCoupleReading);
+
+            return root;
+        }
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
+
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMOCOUPLE) == null) {
+            return;
+        }
+        // End Karl addition
 
         //Unregister for thermoCouple event.
         DefaultNotifier.instance().removeThermaCoupleListener(this);
@@ -53,9 +68,16 @@ public class ThermoCoupleFragment extends Fragment implements ThermocoupleSensor
     public void onResume() {
         super.onResume();
 
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMOCOUPLE) == null) {
+            return;
+        }
+        // End Karl addition
+
         //Register for ThermoCouple Event
         DefaultNotifier.instance().addThermaCoupleListener(this);
-        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        //karl NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
         if(node != null)
         {
             thermocoupleSensor = node.findSensor(NodeEnums.ModuleType.THERMOCOUPLE);

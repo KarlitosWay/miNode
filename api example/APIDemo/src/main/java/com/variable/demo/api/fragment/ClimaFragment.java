@@ -40,26 +40,41 @@ public class ClimaFragment extends Fragment  implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        super.onCreateView(inflater, container, savedInstanceState);
 
-        View root = inflater.inflate(R.layout.clima, null, false);
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.CLIMA) == null) {
+            return inflater.inflate(R.layout.sensor_not_present, null, false);
+        } else {
+            // End Karl addition
 
-       climaHumidText = (TextView) root.findViewById(R.id.txtClimaHumidity);
-       climaLightText = (TextView) root.findViewById(R.id.txtClimaLight);
-       climaPressureText = (TextView) root.findViewById(R.id.txtClimaPressure);
-       climaTempText = (TextView) root.findViewById(R.id.txtClimaTemperature);
+            View root = inflater.inflate(R.layout.clima, null, false);
 
-        return root;
+            climaHumidText = (TextView) root.findViewById(R.id.txtClimaHumidity);
+            climaLightText = (TextView) root.findViewById(R.id.txtClimaLight);
+            climaPressureText = (TextView) root.findViewById(R.id.txtClimaPressure);
+            climaTempText = (TextView) root.findViewById(R.id.txtClimaTemperature);
+
+            return root;
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.CLIMA) == null) {
+            return;
+        }
+        // End Karl addition
+
         DefaultNotifier.instance().addClimaHumidityListener(this);
         DefaultNotifier.instance().addClimaLightListener(this);
         DefaultNotifier.instance().addClimaTemperatureListener(this);
         DefaultNotifier.instance().addClimaPressureListener(this);
 
-        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        //karl NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
         if(node != null){
 
             //Located the first available clima sensor.
@@ -73,6 +88,13 @@ public class ClimaFragment extends Fragment  implements
     @Override
     public void onPause() {
         super.onPause();
+
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.CLIMA) == null) {
+            return;
+        }
+        // End Karl addition
 
         //Unregister for clima events.
         DefaultNotifier.instance().removeClimaHumidityListener(this);

@@ -48,37 +48,52 @@ public class ThermaFragment extends Fragment implements ThermaSensor.ThermaListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View root = inflater.inflate(R.layout.therma, null, false);
-        temperatureText = (TextView) root.findViewById(R.id.txtTherma);
-        temperatureText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               if(++temperatureUnit == 2){
-                   temperatureUnit = 0;
-               }
-            }
-        });
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMA) == null) {
+            return inflater.inflate(R.layout.sensor_not_present, null, false);
+        } else {
+            // End Karl addition
 
-        irLedsSwitch = (ToggleButton) root.findViewById(R.id.irToggle);
-        irLedsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mHandler.obtainMessage(MessageConstants.MESSAGE_CHANGE_IR_THERMA).sendToTarget();
-            }
-        });
+            View root = inflater.inflate(R.layout.therma, null, false);
+            temperatureText = (TextView) root.findViewById(R.id.txtTherma);
+            temperatureText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (++temperatureUnit == 2) {
+                        temperatureUnit = 0;
+                    }
+                }
+            });
 
-        root.findViewById(R.id.btnEmissivityChange).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buildAndShowEmissivityDialog();
-            }
-        });
-        return root;
+            irLedsSwitch = (ToggleButton) root.findViewById(R.id.irToggle);
+            irLedsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    mHandler.obtainMessage(MessageConstants.MESSAGE_CHANGE_IR_THERMA).sendToTarget();
+                }
+            });
+
+            root.findViewById(R.id.btnEmissivityChange).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    buildAndShowEmissivityDialog();
+                }
+            });
+            return root;
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMA) == null) {
+            return;
+        }
+        // End Karl addition
 
         //Unregister for therma event.
         DefaultNotifier.instance().removeThermaListener(this);
@@ -90,10 +105,17 @@ public class ThermaFragment extends Fragment implements ThermaSensor.ThermaListe
     public void onResume() {
         super.onResume();
 
+        // Start Karl addition
+        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        if (node.findSensor(NodeEnums.ModuleType.THERMA) == null) {
+            return;
+        }
+        // End Karl addition
+
         //Register for Therma Event
         DefaultNotifier.instance().addThermaListener(this);
 
-        NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
+        //karl NodeDevice node = ((NodeApplication) getActivity().getApplication()).getActiveNode();
         if(node != null)
         {
             therma = node.findSensor(NodeEnums.ModuleType.THERMA);

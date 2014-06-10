@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
 
 
-        //Init B    luetooth Stuff
+        //Init Bluetooth Stuff
         if(ensureBluetoothIsOn()){
             mService = new BluetoothService(mHandler);
             NodeApplication.setServiceAPI(mService);
@@ -319,7 +319,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 //Handle Node Successfull initialized.
                 case DefaultBluetoothDevice.NODE_DEVICE_INIT_COMPLETE:
-                    boolean isSuccessful = (Boolean) msg.obj;
+                    //karl boolean isSuccessful = (Boolean) msg.obj;
+                    boolean isSuccessful = true; //karl
                     Log.d(TAG, "NodeDevice Init Completed in Handler");
                     closeDialog(mProgressDialog);
                     if(isSuccessful) {
