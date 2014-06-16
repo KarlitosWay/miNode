@@ -13,6 +13,8 @@
 
     <uses-sdk   android:minSdkVersion="7"   android:targetSdkVersion="16" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application android:name="com.variable.demo.api.NodeApplication" android:allowBackup="true" android:icon="@drawable/ic_launcher"    android:label="@string/app_name"    android:theme="@style/AppTheme" >
         <activity   android:name="com.variable.demo.api.KarlMainActivity"    android:label="@string/app_name" >
             <intent-filter>

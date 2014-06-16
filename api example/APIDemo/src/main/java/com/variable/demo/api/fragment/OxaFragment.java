@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.variable.demo.api.MessageConstants;
 import com.variable.demo.api.NodeApplication;
@@ -18,7 +19,12 @@ import com.variable.framework.node.OxaSensor;
 import com.variable.framework.node.enums.NodeEnums;
 import com.variable.framework.node.reading.SensorReading;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by coreymann on 8/13/13.
@@ -29,6 +35,10 @@ public class OxaFragment extends Fragment implements OxaSensor.OxaListener {
     private TextView oxaText;
     private TextView oxaBaseLineA;
     private OxaSensor oxa;
+
+    // karl addition
+    private OutputStreamWriter oxaReadingStreamWriter = null;
+    private OutputStreamWriter oxaBaseLineAStreamWriter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +60,17 @@ public class OxaFragment extends Fragment implements OxaSensor.OxaListener {
         //Turn off oxa
         oxa.stopSensor();
 
+        // karl addition
+        try {
+            if (oxaReadingStreamWriter != null) {
+                oxaReadingStreamWriter.close();
+            }
+            if (oxaBaseLineAStreamWriter != null) {
+                oxaBaseLineAStreamWriter.close();
+            }
+        } catch (Exception e) {
+            // TODO, handle exception
+        }
     }
 
     @Override
@@ -64,6 +85,30 @@ public class OxaFragment extends Fragment implements OxaSensor.OxaListener {
         {
             oxa = node.findSensor(NodeEnums.ModuleType.OXA);
             oxa.startSensor();
+
+            // karl addition
+            File baseDirectory = ((NodeApplication) getActivity().getApplication()).mNodeFolder;
+            if (baseDirectory != null) {
+                for (String s : new String[]{"/oxa_reading.out", "/oxa_baseline_a.out"}) {
+                    File oxaFragmentFile = new File(baseDirectory.getAbsolutePath() + s);
+                    try {
+                        if (!oxaFragmentFile.exists()) {
+                            // TODO, check for failure
+                            oxaFragmentFile.createNewFile();
+                        }
+                        if (s.equals("/oxa_reading.out")) {
+                            oxaReadingStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(oxaFragmentFile.getAbsolutePath()));
+                        }
+                        if (s.equals("/oxa_baseline_a.out")) {
+                            oxaBaseLineAStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(oxaFragmentFile.getAbsolutePath()));
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+            }
         }
     }
 
@@ -86,13 +131,29 @@ public class OxaFragment extends Fragment implements OxaSensor.OxaListener {
      public void handleMessage(Message message)
      {
         float value = message.getData().getFloat(MessageConstants.FLOAT_VALUE_KEY);
+         String timestamp = new SimpleDateFormat("HHmmssSSS").format(new Date());
         switch(message.what){
-            case MessageConstants.MESSAGE_OXA_READING:
-                oxaText.setText(formatter.format(value) + " RAW");
-                break;
-            case MessageConstants.MESSAGE_OXA_BASELINE_A:
-                oxaBaseLineA.setText(message.obj.toString());
-                break;
+                case MessageConstants.MESSAGE_OXA_READING:
+                    String formattedVal = formatter.format(value) + " RAW";
+                    oxaText.setText(formattedVal);
+                    try {
+                        if (oxaReadingStreamWriter != null) {
+                            oxaReadingStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                        }
+                    }  catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                    break;
+                case MessageConstants.MESSAGE_OXA_BASELINE_A:
+                    oxaBaseLineA.setText(message.obj.toString());
+                    try {
+                        if (oxaBaseLineAStreamWriter != null) {
+                            oxaBaseLineAStreamWriter.write(timestamp + " " + message.obj.toString() + "\r\n");
+                        }
+                    }  catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                    break;
         }
       }
     };

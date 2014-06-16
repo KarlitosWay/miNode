@@ -18,7 +18,12 @@ import com.variable.framework.node.NodeDevice;
 import com.variable.framework.node.enums.NodeEnums;
 import com.variable.framework.node.reading.SensorReading;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by coreymann on 8/13/13.
@@ -35,6 +40,12 @@ public class ClimaFragment extends Fragment  implements
     private TextView climaTempText;
     private TextView climaHumidText;
     private ClimaSensor clima;
+
+    // karl addition
+    private OutputStreamWriter climaLightStreamWriter = null;
+    private OutputStreamWriter climaPressureStreamWriter = null;
+    private OutputStreamWriter climaTempStreamWriter = null;
+    private OutputStreamWriter climaHumidStreamWriter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,6 +93,41 @@ public class ClimaFragment extends Fragment  implements
 
             //Turn on all streaming
             clima.setStreamMode(true, true, true);
+
+            // karl addition
+            File baseDirectory = ((NodeApplication) getActivity().getApplication()).mNodeFolder;
+            if (baseDirectory != null) {
+                for (String s : new String[]{"/clima_light.out",
+                                             "/clima_pressure.out",
+                                             "/clima_temp.out",
+                                             "/clima_humid.out"}) {
+                    File climaFragmentFile = new File(baseDirectory.getAbsolutePath() + s);
+                    try {
+                        if (!climaFragmentFile.exists()) {
+                            // TODO, check for failure
+                            climaFragmentFile.createNewFile();
+                        }
+                        if (s.equals("/clima_light.out")) {
+                            climaLightStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                        }
+                        if (s.equals("/clima_pressure.out")) {
+                            climaPressureStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                        }
+                        if (s.equals("/clima_temp.out")) {
+                            climaTempStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                        }
+                        if (s.equals("/clima_humid.out")) {
+                            climaHumidStreamWriter = new OutputStreamWriter(
+                                    new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+            }
         }
     }
 
@@ -104,6 +150,24 @@ public class ClimaFragment extends Fragment  implements
 
         //Turn off clima sensor
         clima.setStreamMode(false, false, false);
+
+        // karl addition
+        try {
+            if (climaLightStreamWriter != null) {
+                climaLightStreamWriter.close();
+            }
+            if (climaPressureStreamWriter != null) {
+                climaPressureStreamWriter.close();
+            }
+            if (climaTempStreamWriter != null) {
+                climaTempStreamWriter.close();
+            }
+            if (climaHumidStreamWriter != null) {
+                climaHumidStreamWriter.close();
+            }
+        } catch (Exception e) {
+            // TODO, handle exception
+        }
     }
 
     @Override
@@ -141,24 +205,61 @@ public class ClimaFragment extends Fragment  implements
         public void handleMessage(Message msg){
 
             float value = msg.getData().getFloat(MessageConstants.FLOAT_VALUE_KEY);
+            String timestamp = new SimpleDateFormat("HHmmssSSS").format(new Date());
             switch(msg.what){
-                case MessageConstants.MESSAGE_CLIMA_HUMIDITY:
-                    climaHumidText.setText(formatter.format(value) + " %RH");
-                    break;
-                 case MessageConstants.MESSAGE_CLIMA_LIGHT:
-                    climaLightText.setText(formatter.format(value) + " LUX");
-                    break;
+                case MessageConstants.MESSAGE_CLIMA_HUMIDITY: {
+                    String formattedVal = formatter.format(value) + " %RH";
+                    climaHumidText.setText(formattedVal);
+                    try {
+                        if (climaHumidStreamWriter != null) {
+                            climaHumidStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+                break;
 
-                case MessageConstants.MESSAGE_CLIMA_PRESSURE:
-                    climaPressureText.setText(formatter.format(value / 1000) + " kPA");
-                    break;
+                case MessageConstants.MESSAGE_CLIMA_LIGHT: {
+                    String formattedVal = formatter.format(value) + " LUX";
+                    climaLightText.setText(formattedVal);
+                    try {
+                        if (climaLightStreamWriter != null) {
+                            climaLightStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+                break;
 
-                case MessageConstants.MESSAGE_CLIMA_TEMPERATURE:
-                    climaTempText.setText(formatter.format(value) + " C");
-                    break;
+                case MessageConstants.MESSAGE_CLIMA_PRESSURE: {
+                    String formattedVal = formatter.format(value / 1000) + " kPA";
+                    climaPressureText.setText(formattedVal);
+                    try {
+                        if (climaPressureStreamWriter != null) {
+                            climaPressureStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+                break;
+
+                case MessageConstants.MESSAGE_CLIMA_TEMPERATURE: {
+                    String formattedVal = formatter.format(value) + " C";
+                    climaTempText.setText(formattedVal);
+                    try {
+                        if (climaTempStreamWriter != null) {
+                            climaTempStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                        }
+                    } catch (Exception e) {
+                        // TODO, handle exception
+                    }
+                }
+                break;
 
             }
-
         }
     };
 }

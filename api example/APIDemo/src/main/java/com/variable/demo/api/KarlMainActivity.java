@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,10 @@ import com.variable.framework.node.NodeDevice;
 import com.variable.framework.node.adapter.ConnectionAdapter;
 import com.variable.framework.node.enums.NodeEnums;
 import com.variable.framework.node.interfaces.ProgressUpdateListener;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class KarlMainActivity extends FragmentActivity implements View.OnClickListener, NodeDevice.SensorDetector{
     private static final String TAG = KarlMainActivity.class.getName();
@@ -244,8 +249,25 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
                 break;
 
             case R.id.btnKarl:
+            {
+                String date = new SimpleDateFormat("HHmmss_ddMMyyyy").format(new Date());
+                ((NodeApplication) getApplication()).mNodeFolder =
+                        new File(Environment.getExternalStorageDirectory() + "/node/" + date);
+                if (!((NodeApplication) getApplication()).mNodeFolder.exists()) {
+                    boolean success = ((NodeApplication) getApplication()).mNodeFolder.mkdirs();
+                    if (success) {
+                        Toast.makeText(KarlMainActivity.this,
+                                       "Created directory for results at node/" + date,
+                                       Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(KarlMainActivity.this,
+                                       "Failed to create results directory, sorry Miguel!",
+                                       Toast.LENGTH_LONG).show();
+                    }
+                }
                 animateToFragment(new KarlFragment(), KarlFragment.TAG);
-                break;
+            }
+            break;
 
             case R.id.btnPulseLed:
                 if(isPulsing){
