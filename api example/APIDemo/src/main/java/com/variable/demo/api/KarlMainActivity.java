@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -51,6 +53,14 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Fix the orientation
+        // We need to do this because the activity will reset if rotated (and as we collect
+        // the stats in this thread, that is a bad thing)
+        setOrientation();
+
+        // Another ugly hack to stop the activity going to sleep while gathering stats. This
+        // should all really be done in a background thread.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Init Bluetooth Stuff
         if(ensureBluetoothIsOn()){
@@ -107,6 +117,14 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
     {
     }
 
+    protected void setOrientation() {
+        //int current = getRequestedOrientation();
+
+        // only switch the orientation if not in portrait
+        //if ( current != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ) {
+            setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+        //}
+    }
 
 
 
@@ -250,9 +268,13 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
 
             case R.id.btnKarl:
             {
-                String date = new SimpleDateFormat("HHmmss_ddMMyyyy").format(new Date());
+                String date = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+                // External storage
+                //((NodeApplication) getApplication()).mNodeFolder =
+                //        new File(Environment.getExternalStorageDirectory() + "/node/" + date);
+                // Internal storage
                 ((NodeApplication) getApplication()).mNodeFolder =
-                        new File(Environment.getExternalStorageDirectory() + "/node/" + date);
+                        new File(getFilesDir() + "/node/" + date);
                 if (!((NodeApplication) getApplication()).mNodeFolder.exists()) {
                     boolean success = ((NodeApplication) getApplication()).mNodeFolder.mkdirs();
                     if (success) {

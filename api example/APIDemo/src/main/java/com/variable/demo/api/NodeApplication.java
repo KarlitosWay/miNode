@@ -20,7 +20,6 @@ public class NodeApplication extends Application {
     public static NodeDevice mActiveNode;
 
     //karl added
-    // TODO, check that external storage exists
     public static File mNodeFolder = null;
 
     public static final BluetoothService getService(){
