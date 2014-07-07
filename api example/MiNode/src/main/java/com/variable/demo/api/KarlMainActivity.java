@@ -269,17 +269,22 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
             case R.id.btnKarl:
             {
                 String date = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+                String state = Environment.getExternalStorageState();
+                if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                    Toast.makeText(this, "Arrghh! External storage media not mounted!", Toast.LENGTH_LONG ).show();
+                    return;
+                }
                 // External storage
-                //((NodeApplication) getApplication()).mNodeFolder =
-                //        new File(Environment.getExternalStorageDirectory() + "/node/" + date);
-                // Internal storage
                 ((NodeApplication) getApplication()).mNodeFolder =
-                        new File(getFilesDir() + "/node/" + date);
+                        new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/miNode/" + date);
+                // Internal storage
+                //((NodeApplication) getApplication()).mNodeFolder =
+                //        new File(getFilesDir() + "/node/" + date);
                 if (!((NodeApplication) getApplication()).mNodeFolder.exists()) {
                     boolean success = ((NodeApplication) getApplication()).mNodeFolder.mkdirs();
                     if (success) {
                         Toast.makeText(KarlMainActivity.this,
-                                       "Created directory for results at node/" + date,
+                                       "Created directory for results at miNode/" + date,
                                        Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(KarlMainActivity.this,

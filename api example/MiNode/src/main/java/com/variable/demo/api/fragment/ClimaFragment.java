@@ -97,31 +97,35 @@ public class ClimaFragment extends Fragment  implements
             // karl addition
             File baseDirectory = ((NodeApplication) getActivity().getApplication()).mNodeFolder;
             if (baseDirectory != null) {
-                for (String s : new String[]{"/clima_light.out",
-                                             "/clima_pressure.out",
-                                             "/clima_temp.out",
-                                             "/clima_humid.out"}) {
+                for (String s : new String[]{"/clima_light.csv",
+                                             "/clima_pressure.csv",
+                                             "/clima_temp.csv",
+                                             "/clima_humid.csv"}) {
                     File climaFragmentFile = new File(baseDirectory.getAbsolutePath() + s);
                     try {
                         if (!climaFragmentFile.exists()) {
                             // TODO, check for failure
                             climaFragmentFile.createNewFile();
                         }
-                        if (s.equals("/clima_light.out")) {
+                        if (s.equals("/clima_light.csv")) {
                             climaLightStreamWriter = new OutputStreamWriter(
                                     new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                            climaLightStreamWriter.write("timestamp,LUX\r\n");
                         }
-                        if (s.equals("/clima_pressure.out")) {
+                        if (s.equals("/clima_pressure.csv")) {
                             climaPressureStreamWriter = new OutputStreamWriter(
                                     new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                            climaPressureStreamWriter.write("timestamp,kPA\r\n");
                         }
-                        if (s.equals("/clima_temp.out")) {
+                        if (s.equals("/clima_temp.csv")) {
                             climaTempStreamWriter = new OutputStreamWriter(
                                     new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                            climaTempStreamWriter.write("timestamp,C\r\n");
                         }
-                        if (s.equals("/clima_humid.out")) {
+                        if (s.equals("/clima_humid.csv")) {
                             climaHumidStreamWriter = new OutputStreamWriter(
                                     new FileOutputStream(climaFragmentFile.getAbsolutePath()));
+                            climaHumidStreamWriter.write("timestamp,%RH\r\n");
                         }
                     } catch (Exception e) {
                         // TODO, handle exception
@@ -199,7 +203,7 @@ public class ClimaFragment extends Fragment  implements
     }
 
     private final Handler mHandler = new Handler(){
-        private final DecimalFormat formatter = new DecimalFormat("0.00");
+        private final DecimalFormat formatter = new DecimalFormat("0.0000");
 
         @Override
         public void handleMessage(Message msg){
@@ -208,11 +212,11 @@ public class ClimaFragment extends Fragment  implements
             String timestamp = new SimpleDateFormat("HHmmssSSS").format(new Date());
             switch(msg.what){
                 case MessageConstants.MESSAGE_CLIMA_HUMIDITY: {
-                    String formattedVal = formatter.format(value) + " %RH";
+                    String formattedVal = formatter.format(value);
                     climaHumidText.setText(formattedVal);
                     try {
                         if (climaHumidStreamWriter != null) {
-                            climaHumidStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                            climaHumidStreamWriter.write(timestamp + "," + formattedVal + "\r\n");
                         }
                     } catch (Exception e) {
                         // TODO, handle exception
@@ -221,11 +225,11 @@ public class ClimaFragment extends Fragment  implements
                 break;
 
                 case MessageConstants.MESSAGE_CLIMA_LIGHT: {
-                    String formattedVal = formatter.format(value) + " LUX";
+                    String formattedVal = formatter.format(value);
                     climaLightText.setText(formattedVal);
                     try {
                         if (climaLightStreamWriter != null) {
-                            climaLightStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                            climaLightStreamWriter.write(timestamp + "," + formattedVal + "\r\n");
                         }
                     } catch (Exception e) {
                         // TODO, handle exception
@@ -234,11 +238,11 @@ public class ClimaFragment extends Fragment  implements
                 break;
 
                 case MessageConstants.MESSAGE_CLIMA_PRESSURE: {
-                    String formattedVal = formatter.format(value / 1000) + " kPA";
+                    String formattedVal = formatter.format(value / 1000);
                     climaPressureText.setText(formattedVal);
                     try {
                         if (climaPressureStreamWriter != null) {
-                            climaPressureStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                            climaPressureStreamWriter.write(timestamp + "," + formattedVal + "\r\n");
                         }
                     } catch (Exception e) {
                         // TODO, handle exception
@@ -247,11 +251,11 @@ public class ClimaFragment extends Fragment  implements
                 break;
 
                 case MessageConstants.MESSAGE_CLIMA_TEMPERATURE: {
-                    String formattedVal = formatter.format(value) + " C";
+                    String formattedVal = formatter.format(value);
                     climaTempText.setText(formattedVal);
                     try {
                         if (climaTempStreamWriter != null) {
-                            climaTempStreamWriter.write(timestamp + " " + formattedVal + "\r\n");
+                            climaTempStreamWriter.write(timestamp + "," + formattedVal + "\r\n");
                         }
                     } catch (Exception e) {
                         // TODO, handle exception
