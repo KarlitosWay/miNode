@@ -19,9 +19,18 @@
             android:layout_weight="1"
             android:layout_gravity="center"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="5dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Show GPS Data"
+            android:id="@+id/btnGPS"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_below="@+id/btnPairedNodes" />
 
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -30,8 +39,8 @@
             android:text="Stream Motion"
             android:id="@+id/btnMotion"
         android:layout_weight="1"
-        android:layout_below="@+id/btnPairedNodes"
-        android:layout_alignLeft="@+id/btnPairedNodes" />
+        android:layout_below="@+id/btnGPS"
+        android:layout_alignLeft="@+id/btnGPS" />
 
     <Button
             style="?android:attr/buttonStyleSmall"
@@ -110,7 +119,7 @@
         android:layout_height="wrap_content"
         android:text="Refresh Sensors "
         android:id="@+id/btnRefreshSensors"
-        android:layout_below="@+id/btnPairedNodes"
+        android:layout_below="@+id/btnGPS"
         android:layout_alignLeft="@+id/btnOxa"
         android:layout_alignRight="@+id/btnPairedNodes"
         android:layout_above="@+id/btnOxa"

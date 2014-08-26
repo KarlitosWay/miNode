@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.variable.demo.api.fragment.BarCodeFragment;
 import com.variable.demo.api.fragment.ChromaScanFragment;
 import com.variable.demo.api.fragment.ClimaFragment;
+import com.variable.demo.api.fragment.GPSFragment;
 import com.variable.demo.api.fragment.KarlFragment;
 import com.variable.demo.api.fragment.KarlMainOptionsFragment;
 import com.variable.demo.api.fragment.MotionFragment;
@@ -221,7 +222,7 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         NodeDevice node = ((NodeApplication) getApplication()).getActiveNode();
-        if(!isNodeConnected(node))
+        if(!isNodeConnected(node) && view.getId() != R.id.btnGPS)
         {
             Toast.makeText(this, "No Connection Available", Toast.LENGTH_SHORT ).show();
             return;
@@ -235,6 +236,10 @@ public class KarlMainActivity extends FragmentActivity implements View.OnClickLi
                if(checkForSensor(node, NodeEnums.ModuleType.CLIMA, true))
                     animateToFragment(new ClimaFragment(), ClimaFragment.TAG);
                break;
+
+            case R.id.btnGPS:
+                animateToFragment(new GPSFragment(), GPSFragment.TAG);
+                break;
 
             case R.id.btnTherma:
                 if(checkForSensor(node, NodeEnums.ModuleType.THERMA, true))

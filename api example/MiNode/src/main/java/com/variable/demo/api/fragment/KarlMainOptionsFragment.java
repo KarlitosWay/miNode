@@ -38,6 +38,7 @@ public class KarlMainOptionsFragment extends Fragment {
         ButtonClickHandler clickHandler = new ButtonClickHandler();
         root.findViewById(R.id.btnMotion).setOnClickListener(clickHandler);
         root.findViewById(R.id.btnPairedNodes).setOnClickListener(clickHandler);
+        root.findViewById(R.id.btnGPS).setOnClickListener(clickHandler);
         root.findViewById(R.id.btnClima).setOnClickListener(clickHandler);
         root.findViewById(R.id.btnTherma).setOnClickListener(clickHandler);
         root.findViewById(R.id.btnOxa).setOnClickListener(clickHandler);
